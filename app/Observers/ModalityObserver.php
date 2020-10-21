@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Modality\ModalityModality;
+use App\Modality\ManagerModality;
 use Illuminate\Database\Eloquent\Model;
 
 class ModalityObserver

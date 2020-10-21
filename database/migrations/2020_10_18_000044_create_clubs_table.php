@@ -21,7 +21,7 @@ class CreateClubsTable extends Migration
 
             $table->string('name');
             $table->string('image')->nullable();
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

@@ -2,8 +2,6 @@
 
 namespace App\Modality;
 
-use App\Models\Modality;
-
 class ManagerModality
 {
     public function getModalityIdentify()
