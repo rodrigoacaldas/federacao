@@ -2,83 +2,131 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Helpers\Functions;
+use App\Http\Requests\AthleteFormRequest;
+use App\Models\Athlete;
+use App\Models\Club;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 
 class AthleteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    public function __construct()
+    {
+        $icon = 'pe-7s-server icon-gradient bg-ripe-malin';
+        // Sharing is caring
+        View::share('icon', $icon);
+    }
+
     public function index()
     {
-        //
+        $athletes = Athlete::all();
+        $title = 'Athletees';
+
+        return view('athletes.index', compact('athletes', 'title'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        $title = 'Cadastro de Atleta';
+        $clubs = Club::all();
+
+        return view('athletes.create', compact('title', 'clubs'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(AthleteFormRequest $request)
     {
-        //
+        $dataFormWithFiles = $this->storeFiles($request);
+
+        $dataFormWithFiles['birthday'] = Functions::date2sql($dataFormWithFiles['birthday']);
+
+        if( $request->hasFile('image') && $request->file('image')->isValid()){
+            $nameFile = kebab_case($request->name).'.'.$request->image->extension();
+
+            $upload = $request->image->storeAs('/athletes', $nameFile);
+
+            if (!$upload)
+                return redirect()->back()->with('error', 'Falha ao fazer o upload da imagem');
+
+            $dataForm['image'] = $nameFile;
+        }
+
+        $athlete = Athlete::create($dataFormWithFiles);
+
+        return redirect()->route('athletes.index')->withSuccess('Cadastrado com Sucesso');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
+        $athlete = Athlete::find($id);
+        $title = 'Deletando Athletee '.$athlete->name;
+
+        return view('athletes.delete', compact('title','athlete'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
+        $athlete = Athlete::find($id);
+        $title = 'Editando Athletee '.$athlete->nome;
+        $clubs = Club::all();
+
+
+        return view('athletes.edit', compact('title','athlete', 'clubs'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(AthleteFormRequest $request, $id)
     {
-        //
+        $dataForm = $request->all();
+        $dataForm['birthday'] = Functions::date2sql($dataForm['birthday']);
+        $athlete = Athlete::find($id);
+
+        if( $request->hasFile('image') && $request->file('image')->isValid()){
+            Storage::delete('/athletes/'.$athlete->file);
+            $nameFile = kebab_case($request->name).'.'.$request->image->extension();
+
+            $upload = $request->image->storeAs('/athletes', $nameFile);
+
+            if (!$upload)
+                return redirect()->back()->with('error', 'Falha ao fazer o upload da imagem');
+
+            $dataForm['image'] = $nameFile;
+        }
+
+        $athlete->update($dataForm);
+
+        return redirect()->route('athletes.index')->withSuccess('Editado com Sucesso');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        $athlete = Athlete::find($id);
+        $delete = $athlete->delete();
+
+        return redirect()->route('athletes.index')->withSuccess('Deletado com Sucesso');
+    }
+
+    public function storeFiles(AthleteFormRequest $request){
+        $dataForm = $request->all();
+
+        $files = ['athlete_image', 'document_image', 'address_image', 'school_image'];
+
+        foreach ($files as $file){
+            if( $request->hasFile($file) && $request->file($file)->isValid()){
+                Storage::delete('/athletes/'.$request->$file); //apaga arquivo casa exista
+
+                $nameFile = uniqid(date('hisYmd')).'.'.$request->$file->extension();
+
+                $upload = $request->$file->storeAs('athletes', $nameFile);
+
+                if (!$upload)
+                    return redirect()->back()->with('error', 'Falha ao fazer o upload do Arquivo');
+
+                $dataForm["$file"] = $nameFile;
+            }
+        }
+
+        return $dataForm;
+
     }
 }

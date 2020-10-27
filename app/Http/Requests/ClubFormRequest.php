@@ -24,7 +24,14 @@ class ClubFormRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => ['required'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required'         => 'O campo Nome é obrigatório.',
         ];
     }
 }

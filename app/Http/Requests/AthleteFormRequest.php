@@ -13,7 +13,7 @@ class AthleteFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,19 @@ class AthleteFormRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => ['required'],
+            'birthday' => ['required'],
+            'club_id' => ['required', 'integer'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required'         => 'O campo Nome é obrigatório.',
+            'birthday.required'     => 'O campo Nascimento é obrigatório.',
+            'club_id.integer'       => 'O campo Clube deve ser um numero.',
+            'club_id.required'      => 'O campo Clube é obrigatório.',
         ];
     }
 }

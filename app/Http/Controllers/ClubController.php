@@ -47,7 +47,7 @@ class ClubController extends Controller
             $dataForm['image'] = $nameFile;
         }
 
-        $club = Club::create($request->all());
+        $club = Club::create($dataForm);
 
         return redirect()->route('clubs.index')->withSuccess('Cadastrado com Sucesso');
     }

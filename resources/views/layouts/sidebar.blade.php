@@ -42,13 +42,13 @@
                 </li>
 
                 <li>
-                    <a href="{{route('athletes.index')}}" @if((Request::segment(1) == 'atletas')) class="mm-active" @endif>
+                    <a href="{{route('athletes.index')}}" @if((Request::segment(1) == 'athletes')) class="mm-active" @endif>
                         <i class="metismenu-icon pe-7s-users"> </i>Atletas
                     </a>
                 </li>
 
                 <li>
-                    <a href="{{route('clubs.index')}}" @if((Request::segment(1) == 'clubes')) class="mm-active" @endif>
+                    <a href="{{route('clubs.index')}}" @if((Request::segment(1) == 'clubs')) class="mm-active" @endif>
                         <i class="metismenu-icon pe-7s-date"> </i>Clubes
                     </a>
                 </li>
@@ -61,12 +61,6 @@
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                     </a>
                     <ul @if( in_array(Request::segment(1) , $subgroupCadastro)) class="mm-show" @endif >
-
-                        <li>
-                            <a href="{{route('home')}}"  @if(Request::segment(1) == 'goals') class="mm-active" @endif>
-                                <i class="metismenu-icon"></i> Metas
-                            </a>
-                        </li>
 
                         @can('isSuper')
                             <li>
