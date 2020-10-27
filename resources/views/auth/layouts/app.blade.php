@@ -11,6 +11,7 @@
     <title>{{ config('app.name', 'Federação') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"/>
     <meta name="description" content="Sistema de cadastro de atletas da "{{ config('app.name', 'Federação') }}>
+    <link rel="icon" href="{{url('assets/images/favicon.png')}}" type="image/png">
 
     <!-- Disable tap highlight on IE -->
     <meta name="msapplication-tap-highlight" content="no">

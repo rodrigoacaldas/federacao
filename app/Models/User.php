@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Role;
+use App\Models\Admin\Modality;
+use App\Models\Admin\Role;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;

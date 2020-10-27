@@ -48,21 +48,12 @@ class UserTableSeeder extends Seeder
         User::create([
             'name'              => 'Rodrigo Caldas',
             'email'             => 'rodrigo@vaptfotos.com.br',
-            'password'          => bcrypt('123456789'),
+            'password'          => bcrypt('q1w2e3r4Q!W@E#R$'),
             'email_verified_at' => \Carbon\Carbon::now(),
             'image'             => '1-rodrigo-caldas.jpeg',
             'modality_id'       => '1',
             'role_id'           => '1',
         ]);
 
-        User::create([
-            'name'              => 'Marcelo',
-            'email'             => 'lorena@vaptfotos.com.br',
-            'password'          => bcrypt('123456789'),
-            'email_verified_at' => \Carbon\Carbon::now(),
-            'image'             => '2-lorena-moura.jpeg',
-            'modality_id'       => '2',
-            'role_id'           => '2',
-        ]);
     }
 }
