@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AthleteFormRequest;
 use App\Models\Admin\Athlete;
 use App\Models\Admin\Club;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 
@@ -42,16 +43,6 @@ class AthleteController extends Controller
 
         $dataFormWithFiles['birthday'] = Functions::date2sql($dataFormWithFiles['birthday']);
 
-        if( $request->hasFile('image') && $request->file('image')->isValid()){
-            $nameFile = kebab_case($request->name).'.'.$request->image->extension();
-
-            $upload = $request->image->storeAs('/athletes', $nameFile);
-
-            if (!$upload)
-                return redirect()->back()->with('error', 'Falha ao fazer o upload da imagem');
-
-            $dataForm['image'] = $nameFile;
-        }
 
         $athlete = Athlete::create($dataFormWithFiles);
 
@@ -78,23 +69,11 @@ class AthleteController extends Controller
 
     public function update(AthleteFormRequest $request, $id)
     {
-        $dataForm = $request->all();
-        $dataForm['birthday'] = Functions::date2sql($dataForm['birthday']);
+        $dataFormWithFiles = $this->storeFiles($request);
+        $dataFormWithFiles['birthday'] = Functions::date2sql($dataFormWithFiles['birthday']);
         $athlete = Athlete::find($id);
 
-        if( $request->hasFile('image') && $request->file('image')->isValid()){
-            Storage::delete('/athletes/'.$athlete->file);
-            $nameFile = kebab_case($request->name).'.'.$request->image->extension();
-
-            $upload = $request->image->storeAs('/athletes', $nameFile);
-
-            if (!$upload)
-                return redirect()->back()->with('error', 'Falha ao fazer o upload da imagem');
-
-            $dataForm['image'] = $nameFile;
-        }
-
-        $athlete->update($dataForm);
+        $athlete->update($dataFormWithFiles);
 
         return redirect()->route('athletes.index')->withSuccess('Editado com Sucesso');
     }
@@ -107,14 +86,14 @@ class AthleteController extends Controller
         return redirect()->route('athletes.index')->withSuccess('Deletado com Sucesso');
     }
 
-    public function storeFiles(AthleteFormRequest $request){
+    public function storeFiles(Request $request){
         $dataForm = $request->all();
 
         $files = ['athlete_image', 'document_image', 'address_image', 'school_image'];
 
         foreach ($files as $file){
             if( $request->hasFile($file) && $request->file($file)->isValid()){
-                Storage::delete('/athletes/'.$request->$file); //apaga arquivo casa exista
+                //Storage::delete('/athletes/'.$request->$file); //apaga arquivo casa exista
 
                 $nameFile = uniqid(date('hisYmd')).'.'.$request->$file->extension();
 
