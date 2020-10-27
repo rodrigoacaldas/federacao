@@ -1,8 +1,8 @@
 <?php
 
 
-use App\Models\Modality;
-use App\Models\Role;
+use App\Models\Admin\Modality;
+use App\Models\Admin\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
